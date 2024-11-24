@@ -138,9 +138,9 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
     #         MagicMock(labels=["enhancement"], creator="user2", assignees=[{"login": "assignee2"}])
     #     ]
 
-    #    # Assert that a ValueError is thrown
-    #    with self.assertRaises(ValueError):
-    #    analysis.fetch_and_plot_with_label("bug")
+    #     # Assert that a ValueError is thrown
+    #     with self.assertRaises(ValueError):
+    #         analysis.fetch_and_plot_with_label("bug")
 
     # Failing test - since its a bug, invalid inputs should be handled
     # @patch('builtins.input', side_effect=["a", ""])
@@ -297,6 +297,143 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
 
         # Assert
         self.assertEqual(top_assignees_count, 2)
+
+
+# test plot_contributors_assignees_and_labels
+
+    @patch('matplotlib.pyplot.subplots')
+    def test_plot_contributors_assignees_and_labels_calls_bar_with_correct_contributor_data(self, mock_subplots):
+        """
+        Test plot_contributors_assignees_and_labels method calls bar with correct data for contributor
+        """
+
+        # Setup
+        mock_fig, mock_axes = MagicMock(), [MagicMock(), MagicMock(), MagicMock()]
+        mock_subplots.return_value = (mock_fig, mock_axes)
+
+        contributor_df = pd.DataFrame([('user1', 1), ('user2', 3)], columns=['Contributor', 'Issue Count'])
+        assignee_df = pd.DataFrame([('assignee1', 4), ('assignee2', 2)], columns=['Assignee', 'Issue Count'])
+        label_df = pd.DataFrame([('bug', 3), ('feature', 2)], columns=['Label', 'Frequency'])
+
+        analysis = ContributorAndAssigneeAnalysis()
+
+        # Action
+        analysis.plot_contributors_assignees_and_labels(contributor_df, assignee_df, label_df, 2, 2)
+
+        args, kwargs = mock_axes[0].bar.call_args
+        contributor_data = args
+
+        # Assert
+        self.assertEqual(contributor_data[0].tolist(), ['user2', 'user1'])
+        self.assertEqual(contributor_data[1].tolist(), [3, 1])
+
+
+    @patch('matplotlib.pyplot.subplots')
+    def test_plot_contributors_assignees_and_labels_calls_bar_with_correct_assignee_data(self, mock_subplots):
+        """
+        Test plot_contributors_assignees_and_labels method calls bar with correct data for assignee
+        """
+
+        # Setup
+        mock_fig, mock_axes = MagicMock(), [MagicMock(), MagicMock(), MagicMock()]
+        mock_subplots.return_value = (mock_fig, mock_axes)
+
+        contributor_df = pd.DataFrame([('user1', 1), ('user2', 3)], columns=['Contributor', 'Issue Count'])
+        assignee_df = pd.DataFrame([('assignee1', 4), ('assignee2', 2)], columns=['Assignee', 'Issue Count'])
+        label_df = pd.DataFrame([('bug', 3), ('feature', 2)], columns=['Label', 'Frequency'])
+
+        analysis = ContributorAndAssigneeAnalysis()
+
+        # Action
+        analysis.plot_contributors_assignees_and_labels(contributor_df, assignee_df, label_df, 2, 2)
+
+        args, kwargs = mock_axes[1].bar.call_args
+        assignee_data = args
+
+        # Assert
+        self.assertEqual(assignee_data[0].tolist(), ['assignee1', 'assignee2'])
+        self.assertEqual(assignee_data[1].tolist(), [4, 2])
+
+
+    @patch('matplotlib.pyplot.subplots')
+    def test_plot_contributors_assignees_and_labels_calls_bar_with_correct_label_data(self, mock_subplots):
+        """
+        Test plot_contributors_assignees_and_labels method calls bar with correct data for labels
+        """
+
+        # Setup
+        mock_fig, mock_axes = MagicMock(), [MagicMock(), MagicMock(), MagicMock()]
+        mock_subplots.return_value = (mock_fig, mock_axes)
+
+        contributor_df = pd.DataFrame([('user1', 1), ('user2', 3)], columns=['Contributor', 'Issue Count'])
+        assignee_df = pd.DataFrame([('assignee1', 4), ('assignee2', 2)], columns=['Assignee', 'Issue Count'])
+        label_df = pd.DataFrame([('bug', 3), ('feature', 2)], columns=['Label', 'Frequency'])
+
+        analysis = ContributorAndAssigneeAnalysis()
+
+        # Action
+        analysis.plot_contributors_assignees_and_labels(contributor_df, assignee_df, label_df, 2, 2)
+
+        args, kwargs = mock_axes[2].bar.call_args
+        label_data = args
+
+        # Assert
+        self.assertEqual(label_data[0].tolist(), ['bug', 'feature'])
+        self.assertEqual(label_data[1].tolist(), [3, 2])
+
+# test plot_contributors_and_assignees
+    @patch('matplotlib.pyplot.subplots')
+    def test_plot_contributors_and_assignees_calls_bar_with_correct_contributor_data(self, mock_subplots):
+        """
+        Test plot_contributors_and_assignees method calls bar with correct data for contributor
+        """
+
+        # Setup
+        mock_fig, mock_axes = MagicMock(), [MagicMock(), MagicMock(), MagicMock()]
+        mock_subplots.return_value = (mock_fig, mock_axes)
+
+        contributor_df = pd.DataFrame([('user1', 1), ('user2', 3)], columns=['Contributor', 'Issue Count'])
+        assignee_df = pd.DataFrame([('assignee1', 4), ('assignee2', 2)], columns=['Assignee', 'Issue Count'])
+        label_df = pd.DataFrame([('bug', 3), ('feature', 2)], columns=['Label', 'Frequency'])
+
+        analysis = ContributorAndAssigneeAnalysis()
+
+        # Action
+        analysis.plot_contributors_and_assignees(contributor_df, assignee_df, 2, 2, 'bug')
+
+        args, kwargs = mock_axes[0].bar.call_args
+        contributor_data = args
+
+        # Assert
+        self.assertEqual(contributor_data[0].tolist(), ['user2', 'user1'])
+        self.assertEqual(contributor_data[1].tolist(), [3, 1])
+
+
+    @patch('matplotlib.pyplot.subplots')
+    def test_plot_contributors_and_assignees_calls_bar_with_correct_assignee_data(self, mock_subplots):
+        """
+        Test plot_contributors_and_assignees method calls bar with correct data for assignee
+        """
+
+        # Setup
+        mock_fig, mock_axes = MagicMock(), [MagicMock(), MagicMock(), MagicMock()]
+        mock_subplots.return_value = (mock_fig, mock_axes)
+
+        contributor_df = pd.DataFrame([('user1', 1), ('user2', 3)], columns=['Contributor', 'Issue Count'])
+        assignee_df = pd.DataFrame([('assignee1', 4), ('assignee2', 2)], columns=['Assignee', 'Issue Count'])
+        label_df = pd.DataFrame([('bug', 3), ('feature', 2)], columns=['Label', 'Frequency'])
+
+        analysis = ContributorAndAssigneeAnalysis()
+
+        # Action
+        analysis.plot_contributors_and_assignees(contributor_df, assignee_df, 2, 2, 'bug')
+
+        args, kwargs = mock_axes[1].bar.call_args
+        assignee_data = args
+
+        # Assert
+        self.assertEqual(assignee_data[0].tolist(), ['assignee1', 'assignee2'])
+        self.assertEqual(assignee_data[1].tolist(), [4, 2])
 
 
 if __name__ == '__main__':
