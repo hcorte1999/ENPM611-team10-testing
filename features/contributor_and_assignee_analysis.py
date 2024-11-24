@@ -145,29 +145,29 @@ class ContributorAndAssigneeAnalysis:
         top_contributors_count = int(input("Enter the number of contributors to display: "))
         top_assignees_count = int(input("Enter the number of assignees to display: "))
         
-        contributor_counts = {}
-        assignee_counts = {}
-        label_counts = Counter()
+        self.contributor_counts = {}
+        self.assignee_counts = {}
+        self.label_counts = Counter()
 
         for issue in self.issues:
             # Count contributors
             contributor = issue.creator
-            contributor_counts[contributor] = contributor_counts.get(contributor, 0) + 1
+            self.contributor_counts[contributor] = self.contributor_counts.get(contributor, 0) + 1
 
             # Count assignees (if any)
             if issue.assignees:
                 for assignee in issue.assignees:
                     assignee_username = assignee['login']
-                    assignee_counts[assignee_username] = assignee_counts.get(assignee_username, 0) + 1
+                    self.assignee_counts[assignee_username] = self.assignee_counts.get(assignee_username, 0) + 1
 
             # Count labels (directly from the list of label strings)
             for label in issue.labels:
-                label_counts[label] += 1
+                self.label_counts[label] += 1
 
         # Create DataFrames from counts
-        contributor_df = pd.DataFrame(list(contributor_counts.items()), columns=['Contributor', 'Issue Count'])
-        assignee_df = pd.DataFrame(list(assignee_counts.items()), columns=['Assignee', 'Issue Count'])
-        label_df = pd.DataFrame(list(label_counts.items()), columns=['Label', 'Frequency'])
+        contributor_df = pd.DataFrame(list(self.contributor_counts.items()), columns=['Contributor', 'Issue Count'])
+        assignee_df = pd.DataFrame(list(self.assignee_counts.items()), columns=['Assignee', 'Issue Count'])
+        label_df = pd.DataFrame(list(self.label_counts.items()), columns=['Label', 'Frequency'])
 
         # Plot the analysis for contributors, assignees, and labels
         self.plot_contributors_assignees_and_labels(contributor_df, assignee_df, label_df, top_contributors_count, top_assignees_count)
