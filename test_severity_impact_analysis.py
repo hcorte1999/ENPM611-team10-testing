@@ -71,5 +71,37 @@ class TestSeverityAndImpactAnalysis(unittest.TestCase):
         except AssertionError as e:
             assert False, f"Expected no error, but got AssertionError: {str(e)}"
 
+    ##########
+    ### The poetry data has labels in the form of kind/bug, status/triage, kind/feature, etc.
+    ### severity_impact_analysis is checking the labels contains of of their custom
+    ### labels:  {'Bug', 'Needs Triage', 'Feature'}, so the severity score is often times incorrect
+    ##########
+    
+    def test_calculate_bug_severity(self):
+        bug_issue = {'labels': ['kind/bug'], 'state': 'open', 'created_date': datetime.now(timezone.utc)}
+        analysis = SeverityAndImpactAnalysis()
+
+        # Expected results: 7.0, ("kind/bug" + "open" + "now - now") --> 5 + 2 + 0.0 = 7.0
+        bug_score = analysis.calculate_severity(bug_issue)
+        self.assertEqual(bug_score, 7.0)
+        
+    
+    def test_calculate_triage_severity(self):
+        triage_issue = {'labels': ['status/triage'], 'state': 'open', 'created_date': datetime.now(timezone.utc)}
+        analysis = SeverityAndImpactAnalysis()
+
+        # Expected results: 5.0: ("status/triage" + "open" + "now - now") --> 3 + 2 + 0.0 = 5.0
+        triage_score = analysis.calculate_severity(triage_issue)
+        self.assertEqual(triage_score, 5.0)
+
+    def test_calculate_feature_severity(self):
+        feature_issue = {'labels': ['kind/feature'], 'state': 'closed', 'created_date': datetime.now(timezone.utc)}
+        analysis = SeverityAndImpactAnalysis()
+
+        # Expected results: 1.0: ("kind/feature" + "closed" + "now - now") --> 1 + 0 + 0.0 = 1.0
+        feature_score = analysis.calculate_severity(feature_issue)
+        self.assertEqual(feature_score, 1.0)
+        
+
 if __name__ == "__main__":
     unittest.main()
