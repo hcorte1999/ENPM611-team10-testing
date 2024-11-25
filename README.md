@@ -1,3 +1,15 @@
+# **Testing Information**
+
+- All tests live in the coverage directory
+- The run_test.sh script was used to:
+  - Run the unit tests in the coverage directory
+  - Omit test_ files and any python system python libraries that appeared
+  - Generate the coverage.xml file
+
+<br><br>
+<hr>
+<br><br>
+
 # **Poetry issues data analytics**
 
 This is a software to analyze insightful trends from the open source project: [poetry](https://github.com/python-poetry/poetry/issues)
