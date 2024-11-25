@@ -101,64 +101,64 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
 
 
     # Failing test - since its a bug, contributer analysis is not handling incomplete data properly
-    # @patch('builtins.input', side_effect=["2", "2"])
-    # def test_fetch_and_plot_when_data_is_incomplete_should_capture_counts(self, mock_input):
-    #     """
-    #     Test fetch_and_plot method, when data is incomplete, should only process present data
-    #     """
-    #     # Setup
-    #     mock_issue = MagicMock()
-    #     mock_issue.creator = 'user3'
-    #     mock_issue.assignees = None
-    #     mock_issue.labels = None
+    @patch('builtins.input', side_effect=["2", "2"])
+    def test_fetch_and_plot_when_data_is_incomplete_should_capture_counts(self, mock_input):
+        """
+        Test fetch_and_plot method, when data is incomplete, should only process present data
+        """
+        # Setup
+        mock_issue = MagicMock()
+        mock_issue.creator = 'user3'
+        mock_issue.assignees = None
+        mock_issue.labels = None
 
-    #     analysis = ContributorAndAssigneeAnalysis()
-    #     analysis.issues = [mock_issue]
+        analysis = ContributorAndAssigneeAnalysis()
+        analysis.issues = [mock_issue]
 
-    #     # Action
-    #     analysis.fetch_and_plot()
+        # Action
+        analysis.fetch_and_plot()
 
-    #     # Assertions
-    #     mock_plot.assert_not_called()
+        # Assertions
+        mock_plot.assert_not_called()
 
 
 ## fetch_and_plot_with_label Tests
 
     # Failing test - since its a bug, invalid inputs should be handled
-    # @patch('builtins.input', side_effect=["0", "0"])
-    # def test_fetch_and_plot_with_label_when_user_inputs_zero_should_print_error_msg(self, mock_input):
-    #     """
-    #     Test fetch_and_plot_with_label when user enters 0 contributors and assignees, should handle gracefully
-    #     """
+    @patch('builtins.input', side_effect=["0", "0"])
+    def test_fetch_and_plot_with_label_when_user_inputs_zero_should_print_error_msg(self, mock_input):
+        """
+        Test fetch_and_plot_with_label when user enters 0 contributors and assignees, should handle gracefully
+        """
         
-    #     analysis = ContributorAndAssigneeAnalysis()
+        analysis = ContributorAndAssigneeAnalysis()
 
-    #     analysis.issues = [
-    #         MagicMock(labels=["feature"], creator="user1", assignees=[{"login": "assignee1"}]),
-    #         MagicMock(labels=["enhancement"], creator="user2", assignees=[{"login": "assignee2"}])
-    #     ]
+        analysis.issues = [
+            MagicMock(labels=["feature"], creator="user1", assignees=[{"login": "assignee1"}]),
+            MagicMock(labels=["enhancement"], creator="user2", assignees=[{"login": "assignee2"}])
+        ]
 
-    #     # Assert that a ValueError is thrown
-    #     with self.assertRaises(ValueError):
-    #         analysis.fetch_and_plot_with_label("bug")
+        # Assert that a ValueError is thrown
+        with self.assertRaises(ValueError):
+            analysis.fetch_and_plot_with_label("bug")
 
     # Failing test - since its a bug, invalid inputs should be handled
-    # @patch('builtins.input', side_effect=["a", ""])
-    # def test_fetch_and_plot_with_label_when_user_inputs_invalid_should_print_error_msg(self, mock_input):
-    #     """
-    #     Test fetch_and_plot_with_label when user enters 0 contributors and assignees, should handle gracefully
-    #     """
+    @patch('builtins.input', side_effect=["a", ""])
+    def test_fetch_and_plot_with_label_when_user_inputs_invalid_should_print_error_msg(self, mock_input):
+        """
+        Test fetch_and_plot_with_label when user enters 0 contributors and assignees, should handle gracefully
+        """
         
-    #     analysis = ContributorAndAssigneeAnalysis()
+        analysis = ContributorAndAssigneeAnalysis()
 
-    #     analysis.issues = [
-    #         MagicMock(labels=["feature"], creator="user1", assignees=[{"login": "assignee1"}]),
-    #         MagicMock(labels=["enhancement"], creator="user2", assignees=[{"login": "assignee2"}])
-    #     ]
+        analysis.issues = [
+            MagicMock(labels=["feature"], creator="user1", assignees=[{"login": "assignee1"}]),
+            MagicMock(labels=["enhancement"], creator="user2", assignees=[{"login": "assignee2"}])
+        ]
 
-    #     # Assert that a ValueError is thrown
-    #     with self.assertRaises(ValueError):
-    #         analysis.fetch_and_plot_with_label("bug")
+        # Assert that a ValueError is thrown
+        with self.assertRaises(ValueError):
+            analysis.fetch_and_plot_with_label("bug")
 
 
     @patch('builtins.input', side_effect=["2", "2"])
