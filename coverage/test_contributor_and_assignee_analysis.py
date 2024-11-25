@@ -100,9 +100,10 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
         pd.testing.assert_frame_equal(label_df, pd.DataFrame([('bug', 2), ('high-priority', 1), ('feature', 1),('low-priority', 1)], columns=['Label', 'Frequency']))
 
 
-    # Failing test - since its a bug, contributer analysis is not handling incomplete data properly
+    # Failing test - since its a bug, contributor analysis is not handling incomplete data properly
     @patch('builtins.input', side_effect=["2", "2"])
-    def test_fetch_and_plot_when_data_is_incomplete_should_capture_counts(self, mock_input):
+    @patch.object(ContributorAndAssigneeAnalysis, 'plot_contributors_assignees_and_labels')
+    def test_fetch_and_plot_when_data_is_incomplete_should_capture_counts(self, mock_plot, mock_input):
         """
         Test fetch_and_plot method, when data is incomplete, should only process present data
         """
@@ -110,7 +111,7 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
         mock_issue = MagicMock()
         mock_issue.creator = 'user3'
         mock_issue.assignees = None
-        mock_issue.labels = None
+        mock_issue.labels = []
 
         analysis = ContributorAndAssigneeAnalysis()
         analysis.issues = [mock_issue]
@@ -122,7 +123,7 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
         mock_plot.assert_not_called()
 
 
-## fetch_and_plot_with_label Tests
+    ## fetch_and_plot_with_label Tests
 
     # Failing test - since its a bug, invalid inputs should be handled
     @patch('builtins.input', side_effect=["0", "0"])
@@ -299,10 +300,11 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
         self.assertEqual(top_assignees_count, 2)
 
 
-# test plot_contributors_assignees_and_labels
+    # test plot_contributors_assignees_and_labels
 
+    @patch("matplotlib.pyplot.show")
     @patch('matplotlib.pyplot.subplots')
-    def test_plot_contributors_assignees_and_labels_calls_bar_with_correct_contributor_data(self, mock_subplots):
+    def test_plot_contributors_assignees_and_labels_calls_bar_with_correct_contributor_data(self, mock_subplots, _):
         """
         Test plot_contributors_assignees_and_labels method calls bar with correct data for contributor
         """
@@ -328,8 +330,9 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
         self.assertEqual(contributor_data[1].tolist(), [3, 1])
 
 
+    @patch("matplotlib.pyplot.show")
     @patch('matplotlib.pyplot.subplots')
-    def test_plot_contributors_assignees_and_labels_calls_bar_with_correct_assignee_data(self, mock_subplots):
+    def test_plot_contributors_assignees_and_labels_calls_bar_with_correct_assignee_data(self, mock_subplots, _):
         """
         Test plot_contributors_assignees_and_labels method calls bar with correct data for assignee
         """
@@ -345,7 +348,7 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
         analysis = ContributorAndAssigneeAnalysis()
 
         # Action
-        analysis.plot_contributors_assignees_and_labels(contributor_df, assignee_df, label_df, 2, 2)
+        analysis.plot_contributors_assignees_and_labels(contributor_df, assignee_df, label_df, 2, 2, "bug")
 
         args, kwargs = mock_axes[1].bar.call_args
         assignee_data = args
@@ -355,8 +358,9 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
         self.assertEqual(assignee_data[1].tolist(), [4, 2])
 
 
+    @patch("matplotlib.pyplot.show")
     @patch('matplotlib.pyplot.subplots')
-    def test_plot_contributors_assignees_and_labels_calls_bar_with_correct_label_data(self, mock_subplots):
+    def test_plot_contributors_assignees_and_labels_calls_bar_with_correct_label_data(self, mock_subplots, _):
         """
         Test plot_contributors_assignees_and_labels method calls bar with correct data for labels
         """
@@ -381,9 +385,11 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
         self.assertEqual(label_data[0].tolist(), ['bug', 'feature'])
         self.assertEqual(label_data[1].tolist(), [3, 2])
 
-# test plot_contributors_and_assignees
+    # test plot_contributors_and_assignees
+
+    @patch("matplotlib.pyplot.show")
     @patch('matplotlib.pyplot.subplots')
-    def test_plot_contributors_and_assignees_calls_bar_with_correct_contributor_data(self, mock_subplots):
+    def test_plot_contributors_and_assignees_calls_bar_with_correct_contributor_data(self, mock_subplots, _):
         """
         Test plot_contributors_and_assignees method calls bar with correct data for contributor
         """
@@ -408,9 +414,9 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
         self.assertEqual(contributor_data[0].tolist(), ['user2', 'user1'])
         self.assertEqual(contributor_data[1].tolist(), [3, 1])
 
-
+    @patch("matplotlib.pyplot.show")
     @patch('matplotlib.pyplot.subplots')
-    def test_plot_contributors_and_assignees_calls_bar_with_correct_assignee_data(self, mock_subplots):
+    def test_plot_contributors_and_assignees_calls_bar_with_correct_assignee_data(self, mock_subplots, _):
         """
         Test plot_contributors_and_assignees method calls bar with correct data for assignee
         """
@@ -426,7 +432,7 @@ class TestContributorAndAssigneeAnalysis(unittest.TestCase):
         analysis = ContributorAndAssigneeAnalysis()
 
         # Action
-        analysis.plot_contributors_and_assignees(contributor_df, assignee_df, 2, 2, 'bug')
+        analysis.plot_contributors_and_assignees(contributor_df, assignee_df, 2, 2)
 
         args, kwargs = mock_axes[1].bar.call_args
         assignee_data = args
