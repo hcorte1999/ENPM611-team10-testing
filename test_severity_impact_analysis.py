@@ -60,6 +60,15 @@ class TestSeverityAndImpactAnalysis(unittest.TestCase):
         # Expected results: 1.0: ("kind/feature" + "closed" + "now - now") --> 1 + 0 + 0.0 = 1.0
         feature_score = analysis.calculate_severity(feature_issue)
         self.assertEqual(feature_score, 1.0)
+    
+    def test_severity_no_date(self):
+        issue = {'labels': ['kind/feature'], 'state': 'open', 'created_date': None}
+        analysis = SeverityAndImpactAnalysis()
+
+        try:
+            analysis.calculate_severity(issue)
+        except TypeError as e:
+            self.fail(f"Caught exception: {e}")
         
     ###
     # Calculate impact tests
